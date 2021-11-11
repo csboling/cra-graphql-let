@@ -1,20 +1,27 @@
 import React from 'react';
-import { load } from 'graphql-let/macro';
 
-const { useGetRatesQuery } = load('./rates.graphql');
+import { useGetRatesQuery } from './rates.graphql';
 
 function ExchangeRates() {
   const { loading, error, data } = useGetRatesQuery();
   if (loading) return <p>Loading...</p>;
   if (error) return <p>Error :(</p>;
+  if (!data) return <p>no data</p>;
 
-  return data.rates.map(({ currency, rate }) => (
-    <div key={currency}>
-      <p>
-        {currency}: {rate}
-      </p>
+  return (
+    <div>
+      {data!.rates!.map((rateEntry) => {
+        const { currency, rate } = rateEntry!;
+        return (
+          <div key={currency}>
+            <p>
+              {currency}: {rate}
+            </p>
+          </div>
+        );
+      })}
     </div>
-  ));
+  );
 }
 
 export default ExchangeRates;
